@@ -521,7 +521,19 @@ MonoBehaviour:
       m_Calls: []
   m_ActionEvents:
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 599065833}
+        m_TargetAssemblyTypeName: HeroBase, Assembly-CSharp
+        m_MethodName: Move
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 351f2ccd-1f9f-44bf-9bec-d62ac5c5f408
     m_ActionName: 'Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
@@ -609,7 +621,7 @@ MonoBehaviour:
     m_ActionId: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
     m_ActionName: UI/TrackedDeviceOrientation
   m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: Keyboard&Mouse
+  m_DefaultControlScheme: 
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
@@ -670,17 +682,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6983420188198371553, guid: 6d42da25d19de114fa8179b12d75c19a, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.19
-      objectReference: {fileID: 0}
-    - target: {fileID: 6983420188198371553, guid: 6d42da25d19de114fa8179b12d75c19a, type: 3}
-      propertyPath: m_LocalPosition.y
+    - target: {fileID: 5929774560574651033, guid: 6d42da25d19de114fa8179b12d75c19a, type: 3}
+      propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6983420188198371553, guid: 6d42da25d19de114fa8179b12d75c19a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 6983420188198371553, guid: 6d42da25d19de114fa8179b12d75c19a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.17
+      objectReference: {fileID: 0}
+    - target: {fileID: 6983420188198371553, guid: 6d42da25d19de114fa8179b12d75c19a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.93
+      value: -4.52
       objectReference: {fileID: 0}
     - target: {fileID: 6983420188198371553, guid: 6d42da25d19de114fa8179b12d75c19a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -872,7 +888,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2237530005131812768, guid: b1eb58f145b09ad45920fc0efb2a7be3, type: 3}
       propertyPath: BounceHeight
-      value: 1.5
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6282742513322508525, guid: b1eb58f145b09ad45920fc0efb2a7be3, type: 3}
       propertyPath: m_Name
@@ -884,7 +900,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7544952736016498741, guid: b1eb58f145b09ad45920fc0efb2a7be3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.1
+      value: 0.41
       objectReference: {fileID: 0}
     - target: {fileID: 7544952736016498741, guid: b1eb58f145b09ad45920fc0efb2a7be3, type: 3}
       propertyPath: m_LocalPosition.z

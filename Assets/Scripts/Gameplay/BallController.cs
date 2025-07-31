@@ -33,33 +33,41 @@ public class BallController : MonoBehaviour
                 Debug.LogWarning("There is no ball handler, cant bounce!");
             }
             else
-            { 
-                float bounce = Mathf.Abs(Mathf.Sin(Time.time * BounceInterval)) * BounceHeight;
-                BallOrigin.position = currentBallHandler.GetDribbleOrigin().position + Vector3.up * bounce;
+            {
+
             }
-            
+            float bounce = Mathf.Abs(Mathf.Sin(Time.time * BounceInterval)) * BounceHeight;
+            BallOrigin.position = currentBallHandler.GetDribbleOrigin().position + Vector3.up * bounce;
+
         }
 
-        if (state == BallState.Idle) return;
-        if (BallRigidbody.linearVelocity.magnitude < Mathf.Epsilon && BallRigidbody.angularVelocity.magnitude < Mathf.Epsilon) SetState(BallState.Idle);
+        if (state == BallState.Free)
+        {
+            //if (BallRigidbody.linearVelocity.magnitude < Mathf.Epsilon && BallRigidbody.angularVelocity.magnitude < Mathf.Epsilon) SetState(BallState.Idle);
+            Debug.Log(BallRigidbody.angularVelocity);
+        }
+
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+
+
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
         {
-            ICharacter character = collision.gameObject.GetComponent<ICharacter>();
+            ICharacter character = other.gameObject.GetComponent<ICharacter>();
             if (character != null)
             {
                 currentBallHandler = character;
                 character.SetControlledBall(this);
             }
-            transform.SetParent(collision.gameObject.transform);
+            transform.SetParent(other.gameObject.transform);
             SetState(BallState.Taken);
-
-            
         }
-
     }
     void OnTriggerStay(Collider other)
     {
@@ -77,7 +85,7 @@ public class BallController : MonoBehaviour
         switch (state)
         {
             case BallState.Idle:
-                BallRigidbody.isKinematic = true;
+                //BallRigidbody.isKinematic = true;
 
                 break;
             case BallState.Free:
@@ -90,7 +98,8 @@ public class BallController : MonoBehaviour
                 {
                     currentBallHandler = null;
                 }
-
+                
+                BallRigidbody.AddTorque(GiveRandomFloat(), GiveRandomFloat(),GiveRandomFloat());
 
                 break;
             case BallState.Taken:
@@ -99,10 +108,16 @@ public class BallController : MonoBehaviour
                 BallRigidbody.mass = 0;
                 BallRigidbody.useGravity = false;
 
+                BallRigidbody.AddTorque(GiveRandomFloat(), GiveRandomFloat(),GiveRandomFloat());
                 Debug.Log($"The ball currently taken by {currentBallHandler.GetCharacterName()}");
 
                 break;
         }
+    }
+
+    private float GiveRandomFloat()
+    {
+        return Random.Range(1, 2);
     }
 
 }

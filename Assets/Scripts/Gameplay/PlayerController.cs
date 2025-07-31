@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour, ICharacter
+public class PlayerController : HeroBase, ICharacter
 {
     [SerializeField]
     private Transform playerDribbleAnchor;
