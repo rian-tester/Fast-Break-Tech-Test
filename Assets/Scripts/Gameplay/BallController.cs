@@ -13,7 +13,7 @@ public class BallController : MonoBehaviour
 
     private SphereCollider BallCollider;
     private Rigidbody BallRigidbody;
-    private Vector3 ballOriginInitialPosition; 
+    private Vector3 ballOriginInitialPosition;
 
 
     void Awake()
@@ -26,30 +26,45 @@ public class BallController : MonoBehaviour
 
     void Update()
     {
+        if (BallRigidbody.linearVelocity.magnitude < Mathf.Epsilon && BallRigidbody.angularVelocity.magnitude < Mathf.Epsilon) SetState(BallState.Idle);
 
-        switch (state)
+        if (state == BallState.Taken)
         {
-            case BallState.Idle:
+            float bounce = Mathf.Abs(Mathf.Sin(Time.time * BounceInterval)) * BounceHeight;
+            BallOrigin.position = ballOriginInitialPosition + Vector3.up * bounce;
 
-                break;
-            case BallState.Free:
-
-                break;
-            case BallState.Taken:
-                BallCollider.isTrigger = true;
-                BallRigidbody.mass = 0;
-                BallRigidbody.useGravity = false;
-                BallRigidbody.isKinematic = false;
-
-                float bounce = Mathf.Abs(Mathf.Sin(Time.time * BounceInterval)) * BounceHeight;
-                BallOrigin.position = ballOriginInitialPosition + Vector3.up * bounce; 
-
-                break;
         }
     }
 
     public void SetState(BallState state)
     {
         this.state = state;
+        switch (state)
+            {
+
+                case BallState.Idle:
+                    BallRigidbody.isKinematic = true;
+
+                    break;
+                case BallState.Free:
+                    BallCollider.isTrigger = false;
+                    BallRigidbody.mass = 1;
+                    BallRigidbody.useGravity = true;
+                    BallRigidbody.isKinematic = false;
+
+                    break;
+                case BallState.Taken:
+                    BallCollider.isTrigger = true;
+                    BallRigidbody.mass = 0;
+                    BallRigidbody.useGravity = false;
+                    BallRigidbody.isKinematic = false;
+
+                    break;
+            }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("Ball is touched");
     }
 }
