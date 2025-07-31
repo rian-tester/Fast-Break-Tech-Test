@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BallController : MonoBehaviour
@@ -20,51 +21,64 @@ public class BallController : MonoBehaviour
     {
         BallCollider = GetComponent<SphereCollider>();
         BallRigidbody = GetComponent<Rigidbody>();
-        if (BallOrigin != null)
-            ballOriginInitialPosition = BallOrigin.position;
+
+        if (BallOrigin != null) ballOriginInitialPosition = BallOrigin.position;
     }
 
     void Update()
     {
-        if (BallRigidbody.linearVelocity.magnitude < Mathf.Epsilon && BallRigidbody.angularVelocity.magnitude < Mathf.Epsilon) SetState(BallState.Idle);
-
         if (state == BallState.Taken)
         {
             float bounce = Mathf.Abs(Mathf.Sin(Time.time * BounceInterval)) * BounceHeight;
             BallOrigin.position = ballOriginInitialPosition + Vector3.up * bounce;
-
         }
+
+        if (state == BallState.Idle) return;
+        if (BallRigidbody.linearVelocity.magnitude < Mathf.Epsilon && BallRigidbody.angularVelocity.magnitude < Mathf.Epsilon) SetState(BallState.Idle);
     }
 
     public void SetState(BallState state)
     {
         this.state = state;
         switch (state)
-            {
+        {
+            case BallState.Idle:
+                BallRigidbody.isKinematic = true;
 
-                case BallState.Idle:
-                    BallRigidbody.isKinematic = true;
+                break;
+            case BallState.Free:
+                BallRigidbody.isKinematic = false;
+                BallCollider.isTrigger = false;
+                BallRigidbody.mass = 1;
+                BallRigidbody.useGravity = true;
 
-                    break;
-                case BallState.Free:
-                    BallCollider.isTrigger = false;
-                    BallRigidbody.mass = 1;
-                    BallRigidbody.useGravity = true;
-                    BallRigidbody.isKinematic = false;
 
-                    break;
-                case BallState.Taken:
-                    BallCollider.isTrigger = true;
-                    BallRigidbody.mass = 0;
-                    BallRigidbody.useGravity = false;
-                    BallRigidbody.isKinematic = false;
+                break;
+            case BallState.Taken:
+                BallRigidbody.isKinematic = false;
+                BallCollider.isTrigger = true;
+                BallRigidbody.mass = 0;
+                BallRigidbody.useGravity = false;
 
-                    break;
-            }
+                break;
+        }
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Ball is touched");
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("Ball is touched by player");
+            SetState(BallState.Taken);
+        }
+
+    }
+    void OnTriggerStay(Collider other)
+    {
+        Debug.Log("Player is holding the ball");
+    }
+    void OnTriggerExit(Collider other)
+    {
+        Debug.Log("Player is releasing the ball");
     }
 }
