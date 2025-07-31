@@ -22,8 +22,6 @@ public class BallController : MonoBehaviour
     {
         BallCollider = GetComponent<SphereCollider>();
         BallRigidbody = GetComponent<Rigidbody>();
-
-        //if (BallOrigin != null) ballOriginInitialPosition = BallOrigin.position;
     }
 
     void Update()
@@ -33,7 +31,6 @@ public class BallController : MonoBehaviour
             if (currentBallHandler == null)
             {
                 Debug.LogWarning("There is no ball handler, cant bounce!");
-                return;
             }
             else
             { 
@@ -52,13 +49,15 @@ public class BallController : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             Debug.Log("Ball is touched by player");
-            SetState(BallState.Taken);
+
             ICharacter hero = collision.gameObject.GetComponent<ICharacter>();
             if (hero != null)
             {
                 currentBallHandler = hero;
+                hero.SetControlledBall(this);
             }
             transform.SetParent(collision.gameObject.transform);
+            SetState(BallState.Taken);
         }
 
     }
@@ -71,7 +70,7 @@ public class BallController : MonoBehaviour
         Debug.Log("Player is releasing the ball");
     }
 
-    
+
     public void SetState(BallState state)
     {
         this.state = state;
@@ -86,6 +85,7 @@ public class BallController : MonoBehaviour
                 BallCollider.isTrigger = false;
                 BallRigidbody.mass = 1;
                 BallRigidbody.useGravity = true;
+                transform.SetParent(null);
 
 
                 break;
