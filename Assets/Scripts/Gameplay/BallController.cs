@@ -12,6 +12,7 @@ public class BallController : MonoBehaviour
 
     public Transform BallOrigin;
 
+    private ICharacter currentBallHandler;
     private SphereCollider BallCollider;
     private Rigidbody BallRigidbody;
     private Vector3 ballOriginInitialPosition;
@@ -22,21 +23,55 @@ public class BallController : MonoBehaviour
         BallCollider = GetComponent<SphereCollider>();
         BallRigidbody = GetComponent<Rigidbody>();
 
-        if (BallOrigin != null) ballOriginInitialPosition = BallOrigin.position;
+        //if (BallOrigin != null) ballOriginInitialPosition = BallOrigin.position;
     }
 
     void Update()
     {
         if (state == BallState.Taken)
         {
-            float bounce = Mathf.Abs(Mathf.Sin(Time.time * BounceInterval)) * BounceHeight;
-            BallOrigin.position = ballOriginInitialPosition + Vector3.up * bounce;
+            if (currentBallHandler == null)
+            {
+                Debug.LogWarning("There is no ball handler, cant bounce!");
+                return;
+            }
+            else
+            { 
+                float bounce = Mathf.Abs(Mathf.Sin(Time.time * BounceInterval)) * BounceHeight;
+                BallOrigin.position = currentBallHandler.GetDribbleOrigin().position + Vector3.up * bounce;
+            }
+            
         }
 
         if (state == BallState.Idle) return;
         if (BallRigidbody.linearVelocity.magnitude < Mathf.Epsilon && BallRigidbody.angularVelocity.magnitude < Mathf.Epsilon) SetState(BallState.Idle);
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("Ball is touched by player");
+            SetState(BallState.Taken);
+            ICharacter hero = collision.gameObject.GetComponent<ICharacter>();
+            if (hero != null)
+            {
+                currentBallHandler = hero;
+            }
+            transform.SetParent(collision.gameObject.transform);
+        }
+
+    }
+    void OnTriggerStay(Collider other)
+    {
+        Debug.Log("Player is holding the ball");
+    }
+    void OnTriggerExit(Collider other)
+    {
+        Debug.Log("Player is releasing the ball");
+    }
+
+    
     public void SetState(BallState state)
     {
         this.state = state;
@@ -64,21 +99,4 @@ public class BallController : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            Debug.Log("Ball is touched by player");
-            SetState(BallState.Taken);
-        }
-
-    }
-    void OnTriggerStay(Collider other)
-    {
-        Debug.Log("Player is holding the ball");
-    }
-    void OnTriggerExit(Collider other)
-    {
-        Debug.Log("Player is releasing the ball");
-    }
 }

@@ -733,6 +733,10 @@ PrefabInstance:
       propertyPath: state
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2237530005131812768, guid: b1eb58f145b09ad45920fc0efb2a7be3, type: 3}
+      propertyPath: BounceHeight
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6282742513322508525, guid: b1eb58f145b09ad45920fc0efb2a7be3, type: 3}
       propertyPath: m_Name
       value: Ball

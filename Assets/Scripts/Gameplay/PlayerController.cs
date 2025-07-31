@@ -1,6 +1,12 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, ICharacter
 {
-    // Intentionally left blank for candidate implementation
+    [SerializeField]
+    private Transform playerDribbleAnchor;
+
+    public Transform GetDribbleOrigin()
+    {
+        return playerDribbleAnchor;
+    }
 }
