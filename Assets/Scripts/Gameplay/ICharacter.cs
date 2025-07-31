@@ -3,4 +3,5 @@ public interface ICharacter
 {
     Transform GetDribbleOrigin();
     void SetControlledBall(BallController theBall);
+    string GetCharacterName();
 }

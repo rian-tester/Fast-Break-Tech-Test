@@ -48,26 +48,26 @@ public class BallController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Ball is touched by player");
-
-            ICharacter hero = collision.gameObject.GetComponent<ICharacter>();
-            if (hero != null)
+            ICharacter character = collision.gameObject.GetComponent<ICharacter>();
+            if (character != null)
             {
-                currentBallHandler = hero;
-                hero.SetControlledBall(this);
+                currentBallHandler = character;
+                character.SetControlledBall(this);
             }
             transform.SetParent(collision.gameObject.transform);
             SetState(BallState.Taken);
+
+            
         }
 
     }
     void OnTriggerStay(Collider other)
     {
-        Debug.Log("Player is holding the ball");
+        //Debug.Log("Player is holding the ball");
     }
     void OnTriggerExit(Collider other)
     {
-        Debug.Log("Player is releasing the ball");
+        //Debug.Log("Player is releasing the ball");
     }
 
 
@@ -86,6 +86,10 @@ public class BallController : MonoBehaviour
                 BallRigidbody.mass = 1;
                 BallRigidbody.useGravity = true;
                 transform.SetParent(null);
+                if (currentBallHandler != null)
+                {
+                    currentBallHandler = null;
+                }
 
 
                 break;
@@ -94,6 +98,8 @@ public class BallController : MonoBehaviour
                 BallCollider.isTrigger = true;
                 BallRigidbody.mass = 0;
                 BallRigidbody.useGravity = false;
+
+                Debug.Log($"The ball currently taken by {currentBallHandler.GetCharacterName()}");
 
                 break;
         }

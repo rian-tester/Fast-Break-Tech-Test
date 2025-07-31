@@ -31,4 +31,9 @@ public class PlayerController : MonoBehaviour, ICharacter
         }
     }
 
+    public string GetCharacterName()
+    {
+        return gameObject.name;
+    }
+
 }
