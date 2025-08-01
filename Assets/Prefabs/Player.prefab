@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 5929774560574651033}
   - component: {fileID: 7134587936817501893}
   - component: {fileID: 3542152408280303613}
+  - component: {fileID: 4124812794990427348}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -259,11 +260,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  lerpSpeed: 10
+  rotationLerpSpeed: 10
   inputDirection: {x: 0, y: 0}
   lastMoveDirection: {x: 0, y: 0, z: 0}
   playerDribbleAnchor: {fileID: 3935218568783908876}
   controlledBall: {fileID: 0}
+--- !u!95 &4124812794990427348
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9214183132029187203}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 3aba0c315a7b7ea4582d01322f174a16, type: 2}
+  m_Controller: {fileID: 9100000, guid: 8a039e427ac20f94e9bb1ceffccfe6dc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &8203817516411223601
 PrefabInstance:
   m_ObjectHideFlags: 0
