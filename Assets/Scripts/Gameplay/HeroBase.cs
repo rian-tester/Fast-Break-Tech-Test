@@ -1,6 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Animator))]
 public abstract class HeroBase : MonoBehaviour, ICharacter
 {
     [Header("Movement Settings")]
@@ -12,7 +13,7 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
     protected Vector2 inputDirection;
     [SerializeField, ReadOnly]
     protected Vector3 lastMoveDirection;
-    protected CharacterController characterController;
+    
 
 
     [Header("Character Settings")]
@@ -28,11 +29,21 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
     public Vector2 Velocity2D => new Vector2(currentVelocity.x, currentVelocity.z);
     public float VelocityY => currentVelocity.y;
 
+    [Header("Component References")]
+    [SerializeField, ReadOnly]
+    protected CharacterController characterController;
+    [SerializeField, ReadOnly]
+    protected Animator animator;
 
+
+    protected virtual void Awake()
+    {
+        characterController = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
+    }
     protected virtual void Start()
     {
         controlledBall = null;
-        characterController = GetComponent<CharacterController>();
         previousPosition = transform.position;
     }
 
@@ -41,6 +52,7 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
         Move();
         Turn();
         CalculateVelocity();
+        UpdateAnimation();
     }
     protected virtual void Move()
     {
@@ -64,6 +76,12 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
         Vector3 delta = transform.position - previousPosition;
         currentVelocity = delta / Time.deltaTime;
         previousPosition = transform.position;
+    }
+
+    private void UpdateAnimation()
+    {
+
+        animator.SetFloat("Velocity", Velocity2D.magnitude);
     }
 
     public Transform GetDribbleOrigin()

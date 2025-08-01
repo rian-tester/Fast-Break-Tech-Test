@@ -7,7 +7,7 @@ public class PlayerController : HeroBase
     protected override void Update()
     {
         base.Update();
-        Debug.Log(Velocity2D);
+        Debug.Log(animator.GetFloat("Velocity")); ;
     }
     public void OnMove(InputAction.CallbackContext context)
     {

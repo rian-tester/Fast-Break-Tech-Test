@@ -24,9 +24,11 @@ public class BallController : MonoBehaviour
     private float rbAngularDamping = 1f;
 
 
-    [Header("References")]
+    [Header("Component References")]
     private ICharacter currentBallHandler;
+    [SerializeField, ReadOnly]
     private SphereCollider BallCollider;
+    [SerializeField, ReadOnly]
     private Rigidbody BallRigidbody;
 
     void Awake()
