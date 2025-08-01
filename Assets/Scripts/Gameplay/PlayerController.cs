@@ -1,28 +1,18 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class PlayerController : HeroBase, ICharacter
+public class PlayerController : HeroBase
 {
-    [SerializeField]
-    private Transform playerDribbleAnchor;
-
-    [SerializeField]
-    private BallController controlledBall;
-
-
     void Start()
     {
         controlledBall = null;
     }
-    public Transform GetDribbleOrigin()
-    {
-        return playerDribbleAnchor;
-    }
 
-    public void SetControlledBall(BallController theBall)
+    public void OnMove(InputAction.CallbackContext context)
     {
-        controlledBall = theBall;
+        inputDirection = context.ReadValue<Vector2>();
     }
-
+    
     public void TestReleaseBall()
     {
         if (controlledBall != null)
@@ -30,10 +20,4 @@ public class PlayerController : HeroBase, ICharacter
             controlledBall.SetState(BallState.Free);
         }
     }
-
-    public string GetCharacterName()
-    {
-        return gameObject.name;
-    }
-
 }

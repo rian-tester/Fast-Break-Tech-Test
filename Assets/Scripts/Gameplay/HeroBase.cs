@@ -1,24 +1,37 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-public abstract class HeroBase : MonoBehaviour
+[RequireComponent(typeof(CharacterController))]
+public abstract class HeroBase : MonoBehaviour, ICharacter
 {
-    private CharacterController characterController;
-    private Vector3 lastMoveDirection;
-    private float moveSpeed = 5f;
-    private Vector2 inputDirection;
-    public float gravity = -9.81f;
+    [Header("Movement Settings")]
+    [SerializeField]
+    protected float moveSpeed = 5f;
+    [SerializeField]
+    protected float lerpSpeed = 10f;
+    [SerializeField, ReadOnly]
+    protected Vector2 inputDirection;
+    [SerializeField, ReadOnly]
+    protected Vector3 lastMoveDirection;
+    protected CharacterController characterController;
+
+
+    [Header("Character Settings")]
+    [SerializeField]
+    protected Transform playerDribbleAnchor;
+    [SerializeField, ReadOnly]
+    protected BallController controlledBall;
+
     void Awake()
     {
         characterController = GetComponent<CharacterController>();
     }
-
-    public void Move(InputAction.CallbackContext context)
+    void Update()
     {
-        inputDirection = context.ReadValue<Vector2>();
+        Move();
+        Turn();
     }
 
-    void Update()
+    protected virtual void Move()
     {
         Vector3 moveDir = new Vector3(inputDirection.x, 0, inputDirection.y);
         if (moveDir.sqrMagnitude > 0.01f)
@@ -26,15 +39,29 @@ public abstract class HeroBase : MonoBehaviour
             lastMoveDirection = moveDir.normalized;
             characterController.Move(lastMoveDirection * Time.deltaTime * moveSpeed);
         }
-        Turn();       
     }
-    
-    public void Turn()
+    protected virtual void Turn()
     {
         if (lastMoveDirection.sqrMagnitude > 0.01f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(lastMoveDirection, Vector3.up);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * lerpSpeed);
         }
     }
+
+    public Transform GetDribbleOrigin()
+    {
+        return playerDribbleAnchor;
+    }
+
+    public void SetControlledBall(BallController theBall)
+    {
+        controlledBall = theBall;
+    }
+
+    public string GetCharacterName()
+    {
+        return gameObject.name;
+    }
+
 }
