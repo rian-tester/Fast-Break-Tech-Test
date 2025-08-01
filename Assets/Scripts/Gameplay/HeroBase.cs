@@ -7,7 +7,7 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
     [SerializeField]
     protected float moveSpeed = 5f;
     [SerializeField]
-    protected float lerpSpeed = 10f;
+    protected float rotationLerpSpeed = 10f;
     [SerializeField, ReadOnly]
     protected Vector2 inputDirection;
     [SerializeField, ReadOnly]
@@ -21,16 +21,27 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
     [SerializeField, ReadOnly]
     protected BallController controlledBall;
 
-    void Awake()
+
+    [Header("Velocity")]
+    private Vector3 previousPosition;
+    private Vector3 currentVelocity;
+    public Vector2 Velocity2D => new Vector2(currentVelocity.x, currentVelocity.z);
+    public float VelocityY => currentVelocity.y;
+
+
+    protected virtual void Start()
     {
+        controlledBall = null;
         characterController = GetComponent<CharacterController>();
+        previousPosition = transform.position;
     }
-    void Update()
+
+    protected virtual void Update()
     {
         Move();
         Turn();
+        CalculateVelocity();
     }
-
     protected virtual void Move()
     {
         Vector3 moveDir = new Vector3(inputDirection.x, 0, inputDirection.y);
@@ -45,8 +56,14 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
         if (lastMoveDirection.sqrMagnitude > 0.01f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(lastMoveDirection, Vector3.up);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * lerpSpeed);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * rotationLerpSpeed);
         }
+    }
+    private void CalculateVelocity()
+    {
+        Vector3 delta = transform.position - previousPosition;
+        currentVelocity = delta / Time.deltaTime;
+        previousPosition = transform.position;
     }
 
     public Transform GetDribbleOrigin()

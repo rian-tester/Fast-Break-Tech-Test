@@ -3,11 +3,12 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : HeroBase
 {
-    void Start()
-    {
-        controlledBall = null;
-    }
 
+    protected override void Update()
+    {
+        base.Update();
+        Debug.Log(Velocity2D);
+    }
     public void OnMove(InputAction.CallbackContext context)
     {
         inputDirection = context.ReadValue<Vector2>();
