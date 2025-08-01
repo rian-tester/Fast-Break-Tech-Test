@@ -4,6 +4,10 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public abstract class HeroBase : MonoBehaviour, ICharacter
 {
+    [Header("State")]
+    [SerializeField, ReadOnly]
+    protected CharacterState characterState = CharacterState.EmptyHanded;
+
     [Header("Movement Settings")]
     [SerializeField]
     protected float moveSpeed = 5f;
@@ -84,6 +88,19 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
         animator.SetFloat("Velocity", Velocity2D.magnitude);
     }
 
+    public void SetState(CharacterState newState)
+    {
+        if (characterState == newState) return;
+        var oldState = characterState;
+        characterState = newState;
+        OnStateChanged(newState, oldState);
+    }
+
+    protected virtual void OnStateChanged(CharacterState newState, CharacterState oldState)
+    {
+        
+    }
+
     public Transform GetDribbleOrigin()
     {
         return playerDribbleAnchor;
@@ -92,6 +109,7 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
     public void SetControlledBall(BallController theBall)
     {
         controlledBall = theBall;
+        SetState(CharacterState.Dribbling);
     }
 
     public string GetCharacterName()

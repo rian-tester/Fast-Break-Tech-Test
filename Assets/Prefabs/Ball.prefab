@@ -150,9 +150,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 0
-  BounceInterval: 5
-  BounceHeight: 2
+  bounceInterval: 5
+  bounceHeight: 2.5
   rbLinearDamping: 1.2
   rbAngularDamping: 1
-  BallCollider: {fileID: 0}
-  BallRigidbody: {fileID: 0}
+  ballCollider: {fileID: 0}
+  ballRigidbody: {fileID: 0}

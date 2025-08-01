@@ -11,9 +11,9 @@ public class BallController : MonoBehaviour
 
     [Header("Bouncing")]
     [SerializeField]
-    private float BounceInterval = 5f;
+    private float bounceInterval = 5f;
     [SerializeField]
-    private float BounceHeight = 1f;
+    private float bounceHeight = 1f;
     private Transform bounceOrigin;
 
 
@@ -27,21 +27,23 @@ public class BallController : MonoBehaviour
     [Header("Component References")]
     private ICharacter currentBallHandler;
     [SerializeField, ReadOnly]
-    private SphereCollider BallCollider;
+    private SphereCollider ballCollider;
     [SerializeField, ReadOnly]
-    private Rigidbody BallRigidbody;
+    private Rigidbody ballRigidbody;
+    public Rigidbody BallRigidbody => ballRigidbody;
 
     void Awake()
     {
-        BallCollider = GetComponent<SphereCollider>();
-        BallRigidbody = GetComponent<Rigidbody>();
+        ballCollider = GetComponent<SphereCollider>();
+        ballRigidbody = GetComponent<Rigidbody>();
     }
 
     void Start()
     {
         bounceOrigin = gameObject.transform;
-        BallRigidbody.linearDamping = rbLinearDamping;
-        BallRigidbody.angularDamping = rbAngularDamping;
+        ballRigidbody.linearDamping = rbLinearDamping;
+        ballRigidbody.angularDamping = rbAngularDamping;
+        SetState(BallState.Idle);
     }
     void Update()
     {
@@ -55,20 +57,28 @@ public class BallController : MonoBehaviour
             {
 
             }
-            float bounce = Mathf.Abs(Mathf.Sin(Time.time * BounceInterval)) * BounceHeight;
+            float bounce = Mathf.Abs(Mathf.Sin(Time.time * bounceInterval)) * bounceHeight;
             bounceOrigin.position = currentBallHandler.GetDribbleOrigin().position + Vector3.up * bounce;
 
         }
 
-        if (state == BallState.Free)
-        {
-            if (BallRigidbody.linearVelocity.magnitude < Mathf.Epsilon && BallRigidbody.angularVelocity.magnitude < Mathf.Epsilon) SetState(BallState.Idle);
-            Debug.Log(BallRigidbody.angularVelocity);
-            Debug.Log(BallRigidbody.linearVelocity);
-        }
-
+        if (ballRigidbody.linearVelocity.magnitude < Mathf.Epsilon && ballRigidbody.angularVelocity.magnitude < Mathf.Epsilon) SetState(BallState.Idle);
     }
-
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            ICharacter character = collision.gameObject.GetComponent<ICharacter>();
+            if (character != null)
+            {
+                currentBallHandler = character;
+                character.SetControlledBall(this);
+            }
+            SetState(BallState.Taken);
+            transform.SetParent(collision.gameObject.transform);
+            
+        }
+    }
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
@@ -79,42 +89,56 @@ public class BallController : MonoBehaviour
                 currentBallHandler = character;
                 character.SetControlledBall(this);
             }
-            transform.SetParent(other.gameObject.transform);
             SetState(BallState.Taken);
+            transform.SetParent(other.gameObject.transform);
+            
         }
     }
-    public void SetState(BallState state)
+    public void SetState(BallState newState)
     {
-        this.state = state;
+        state = newState;
         switch (state)
         {
             case BallState.Idle:
-                //BallRigidbody.isKinematic = true;
+                ballRigidbody.isKinematic = false;
+                ballCollider.isTrigger = false;
+                ballRigidbody.mass = 1f;
+                ballRigidbody.useGravity = true;
+                transform.SetParent(null);
+                if (currentBallHandler != null)
+                {
+                    currentBallHandler = null;
+                }
+                
+                
 
                 break;
             case BallState.Free:
-                BallRigidbody.isKinematic = false;
-                BallCollider.isTrigger = false;
-                BallRigidbody.mass = 1;
-                BallRigidbody.useGravity = true;
+                ballRigidbody.isKinematic = false;
+                ballCollider.isTrigger = false;
+                ballRigidbody.mass = 1;
+                ballRigidbody.useGravity = true;
                 transform.SetParent(null);
                 if (currentBallHandler != null)
                 {
                     currentBallHandler = null;
                 }
 
-                BallRigidbody.AddTorque(GiveRandomFloat(), GiveRandomFloat(), GiveRandomFloat());
+                ballRigidbody.AddTorque(GiveRandomFloat(), GiveRandomFloat(), GiveRandomFloat());
 
                 break;
             case BallState.Taken:
-                BallRigidbody.isKinematic = false;
-                BallCollider.isTrigger = true;
-                BallRigidbody.mass = 0;
-                BallRigidbody.useGravity = false;
+                ballRigidbody.isKinematic = false;
+                ballCollider.isTrigger = true;
+                ballRigidbody.mass = 0;
+                ballRigidbody.useGravity = false;
 
-                BallRigidbody.AddTorque(GiveRandomFloat(), GiveRandomFloat(), GiveRandomFloat());
+                ballRigidbody.AddTorque(GiveRandomFloat(), GiveRandomFloat(), GiveRandomFloat());
                 Debug.Log($"The ball currently taken by {currentBallHandler.GetCharacterName()}");
 
+                break;
+
+            default:
                 break;
         }
     }
