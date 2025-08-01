@@ -151,5 +151,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   state: 0
   BounceInterval: 5
-  BounceHeight: 4.96
+  BounceHeight: 3
   BallOrigin: {fileID: 7544952736016498741}
