@@ -729,14 +729,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1917427544448171645, guid: b1eb58f145b09ad45920fc0efb2a7be3, type: 3}
-      propertyPath: m_LinearDamping
-      value: 1.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1917427544448171645, guid: b1eb58f145b09ad45920fc0efb2a7be3, type: 3}
-      propertyPath: m_AngularDamping
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6282742513322508525, guid: b1eb58f145b09ad45920fc0efb2a7be3, type: 3}
       propertyPath: m_Name
       value: Ball

@@ -18,6 +18,7 @@ public class PlayerController : HeroBase
         if (controlledBall != null)
         {
             controlledBall.SetState(BallState.Free);
+            controlledBall = null;
         }
     }
 }
