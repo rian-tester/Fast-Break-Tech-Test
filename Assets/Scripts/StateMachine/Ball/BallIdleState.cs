@@ -11,8 +11,6 @@ public class BallIdleState : State
 
     public override void Enter()
     {
-        Debug.Log("Ball entered Idle state");
-        GameEvents.TriggerBallStateChanged(stateMachine.BallController, BallState.Idle, BallState.Idle);
         
         var ball = stateMachine.BallController;
         ball.BallRigidbody.isKinematic = false;

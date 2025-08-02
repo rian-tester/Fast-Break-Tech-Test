@@ -13,7 +13,6 @@ public class ShootingState : State
 
     public override void Enter()
     {
-        GameEvents.TriggerPlayerStateChanged(stateMachine.PlayerController, CharacterState.Shooting, CharacterState.Dribbling);
         shootingTimer = 0f;
         hasExecutedShoot = false;
     }
@@ -53,7 +52,7 @@ public class ShootingState : State
                 if (targetRing != null)
                 {
                     controlledBall.SetupShootingTarget(targetRing.ShootingTarget.position, playerController.PlayerAccuracy);
-                    controlledBall.SetBallState(BallState.FlyToRing);
+                    controlledBall.BallStateMachine.TransitionToFlyToRing();
                     controlledBall.transform.SetParent(null);
                     controlledBall.ClearBallHandler();
                     controlledBall.SetPickupCooldown();

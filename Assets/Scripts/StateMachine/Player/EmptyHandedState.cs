@@ -11,8 +11,6 @@ public class EmptyHandedState : State
 
     public override void Enter()
     {
-        Debug.Log($"{stateMachine.PlayerController.name} entered EmptyHanded state");
-        GameEvents.TriggerPlayerStateChanged(stateMachine.PlayerController, CharacterState.EmptyHanded, CharacterState.EmptyHanded);
         
         var playerController = stateMachine.PlayerController;
         var controlledBall = playerController.ControlledBall;

@@ -5,9 +5,7 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody))]
 public class BallController : MonoBehaviour
 {
-    [Header("State")]
-    [SerializeField]
-    private BallState state = BallState.Idle;
+
 
     [Header("Bouncing")]
     [SerializeField]
@@ -31,7 +29,7 @@ public class BallController : MonoBehaviour
     [SerializeField, ReadOnly]
     private Rigidbody ballRigidbody;
     public Rigidbody BallRigidbody => ballRigidbody;
-    public BallState State => state;
+    public BallStateMachine BallStateMachine => ballStateMachine;
 
 
 
@@ -76,7 +74,7 @@ public class BallController : MonoBehaviour
     }
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player") && state != BallState.Taken && !isBeingPickedUp)
+        if (collision.gameObject.CompareTag("Player") && !ballStateMachine.IsInState<BallTakenState>() && !isBeingPickedUp)
         {
             TryPickupBall(collision.gameObject);
         }
@@ -86,7 +84,7 @@ public class BallController : MonoBehaviour
     {
         if (pickupCooldown > 0) return;
         
-        if (other.gameObject.CompareTag("Player") && state != BallState.Taken && !isBeingPickedUp)
+        if (other.gameObject.CompareTag("Player") && !ballStateMachine.IsInState<BallTakenState>() && !isBeingPickedUp)
         {
             TryPickupBall(other.gameObject);
         }
@@ -178,7 +176,7 @@ public class BallController : MonoBehaviour
             transform.position = ringCenter;
         }
 
-        //SetState(BallState.Free);
+        
         shooterPosition = new Vector3();
         ringTopPosition = new Vector3();
         ringCenterPosition= new Vector3();
@@ -193,27 +191,7 @@ public class BallController : MonoBehaviour
             flyState.OnFlightComplete();
         }
     }
-    public void SetBallState(BallState newState)
-    {
-        state = newState;
-        isBeingPickedUp = false;
-        
-        switch (newState)
-        {
-            case BallState.Idle:
-                ballStateMachine.TransitionToIdle();
-                break;
-            case BallState.Free:
-                ballStateMachine.TransitionToFree();
-                break;
-            case BallState.Taken:
-                ballStateMachine.TransitionToTaken();
-                break;
-            case BallState.FlyToRing:
-                ballStateMachine.TransitionToFlyToRing();
-                break;
-        }
-    }
+
 
     public float GiveRandomFloat()
     {

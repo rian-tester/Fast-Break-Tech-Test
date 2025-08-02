@@ -11,15 +11,13 @@ public class DribblingState : State
 
     public override void Enter()
     {
-        Debug.Log($"{stateMachine.PlayerController.name} entered Dribbling state");
-        GameEvents.TriggerPlayerStateChanged(stateMachine.PlayerController, CharacterState.Dribbling, CharacterState.EmptyHanded);
         
         var playerController = stateMachine.PlayerController;
         var controlledBall = playerController.ControlledBall;
         
         if (controlledBall != null)
         {
-            controlledBall.SetBallState(BallState.Taken);
+            controlledBall.BallStateMachine.TransitionToTaken();
         }
     }
 

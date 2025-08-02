@@ -57,10 +57,7 @@ public class PlayerController : HeroBase
         }
     }
 
-    protected override void OnStateChanged(CharacterState newState, CharacterState oldState)
-    {
-        
-    }
+
 
     public override void SetControlledBall(BallController theBall)
     {
@@ -85,7 +82,7 @@ public class PlayerController : HeroBase
     {
         if (controlledBall != null)
         {
-            controlledBall.SetBallState(BallState.Free);
+            controlledBall.BallStateMachine.TransitionToFree();
             controlledBall.transform.SetParent(null);
             controlledBall.BallRigidbody.WakeUp();
             controlledBall.BallRigidbody.AddForce(transform.forward * passingPower/10);

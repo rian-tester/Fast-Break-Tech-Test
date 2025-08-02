@@ -7,8 +7,6 @@ public static class GameEvents
     public static event Action<PlayerController, Vector3> OnBallPassed;
     public static event Action<PlayerController, BasketballRing> OnBallShot;
     public static event Action<BallController> OnBallReleased;
-    public static event Action<PlayerController, CharacterState, CharacterState> OnPlayerStateChanged;
-    public static event Action<BallController, BallState, BallState> OnBallStateChanged;
 
     public static void TriggerBallPickedUp(PlayerController player, BallController ball)
     {
@@ -28,15 +26,5 @@ public static class GameEvents
     public static void TriggerBallReleased(BallController ball)
     {
         OnBallReleased?.Invoke(ball);
-    }
-
-    public static void TriggerPlayerStateChanged(PlayerController player, CharacterState newState, CharacterState oldState)
-    {
-        OnPlayerStateChanged?.Invoke(player, newState, oldState);
-    }
-
-    public static void TriggerBallStateChanged(BallController ball, BallState newState, BallState oldState)
-    {
-        OnBallStateChanged?.Invoke(ball, newState, oldState);
     }
 }

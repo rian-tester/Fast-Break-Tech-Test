@@ -11,7 +11,6 @@ public class BallTakenState : State
 
     public override void Enter()
     {
-        GameEvents.TriggerBallStateChanged(stateMachine.BallController, BallState.Taken, BallState.Free);
         
         var ball = stateMachine.BallController;
         

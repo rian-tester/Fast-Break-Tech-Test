@@ -11,8 +11,6 @@ public class BallFreeState : State
 
     public override void Enter()
     {
-        Debug.Log("Ball entered Free state");
-        GameEvents.TriggerBallStateChanged(stateMachine.BallController, BallState.Free, BallState.Idle);
         
         var ball = stateMachine.BallController;
         ball.BallRigidbody.isKinematic = false;

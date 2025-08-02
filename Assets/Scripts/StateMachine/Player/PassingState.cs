@@ -13,7 +13,6 @@ public class PassingState : State
 
     public override void Enter()
     {
-        GameEvents.TriggerPlayerStateChanged(stateMachine.PlayerController, CharacterState.Passing, CharacterState.Dribbling);
         passingTimer = 0f;
         hasExecutedPass = false;
         
@@ -43,7 +42,7 @@ public class PassingState : State
         
         if (controlledBall != null)
         {
-            controlledBall.SetBallState(BallState.Free);
+            controlledBall.BallStateMachine.TransitionToFree();
             controlledBall.transform.SetParent(null);
             controlledBall.ClearBallHandler();
             controlledBall.SetPickupCooldown();

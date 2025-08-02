@@ -11,8 +11,6 @@ public class BallFlyToRingState : State
 
     public override void Enter()
     {
-        Debug.Log("Ball entered FlyToRing state");
-        GameEvents.TriggerBallStateChanged(stateMachine.BallController, BallState.FlyToRing, BallState.Taken);
         
         var ball = stateMachine.BallController;
         ball.BallRigidbody.isKinematic = true;
