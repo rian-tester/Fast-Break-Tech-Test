@@ -31,6 +31,8 @@ public class BallController : MonoBehaviour
     [SerializeField, ReadOnly]
     private Rigidbody ballRigidbody;
     public Rigidbody BallRigidbody => ballRigidbody;
+    
+    private bool isBeingPickedUp = false;
 
     void Awake()
     {
@@ -66,38 +68,43 @@ public class BallController : MonoBehaviour
     }
     void OnCollisionEnter(Collision collision)
     {
-        /*
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player") && state != BallState.Taken && !isBeingPickedUp)
         {
-            ICharacter character = collision.gameObject.GetComponent<ICharacter>();
-            if (character != null)
-            {
-                currentBallHandler = character;
-                character.SetControlledBall(this);
-            }
-            SetState(BallState.Taken);
-            transform.SetParent(collision.gameObject.transform);
-
+            TryPickupBall(collision.gameObject);
         }
-        */
     }
+    
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player") && state != BallState.Taken && !isBeingPickedUp)
         {
-            ICharacter character = other.gameObject.GetComponent<ICharacter>();
-            if (character != null)
+            TryPickupBall(other.gameObject);
+        }
+    }
+    
+    private void TryPickupBall(GameObject playerObject)
+    {
+        isBeingPickedUp = true;
+        
+        ICharacter character = playerObject.GetComponent<ICharacter>();
+        if (character != null)
+        {
+            currentBallHandler = character;
+            character.SetControlledBall(this);
+            if (currentBallHandler != null)
             {
-                currentBallHandler = character;
-                character.SetControlledBall(this);
                 SetState(BallState.Taken);
-                transform.SetParent(other.gameObject.transform);
+                transform.SetParent(playerObject.transform);
             }
         }
+        
+        isBeingPickedUp = false;
     }
     public void SetState(BallState newState)
     {
         state = newState;
+        isBeingPickedUp = false;
+        
         switch (state)
         {
             case BallState.Idle:
@@ -106,6 +113,7 @@ public class BallController : MonoBehaviour
                 ballRigidbody.mass = 1f;
                 ballRigidbody.useGravity = true;
                 transform.SetParent(null);
+                ballRigidbody.WakeUp();
                 if (currentBallHandler != null)
                 {
                     currentBallHandler = null;

@@ -21,12 +21,14 @@ public class PlayerController : HeroBase
 
     public void OnPass(InputAction.CallbackContext context)
     {
-        if (context.performed) SetState(CharacterState.Passing);
+        if (context.performed && characterState == CharacterState.Dribbling) 
+            SetState(CharacterState.Passing);
     }
 
     public void OnShoot(InputAction.CallbackContext context)
     {
-        if (context.performed) SetState(CharacterState.Shooting);
+        if (context.performed && characterState == CharacterState.Dribbling) 
+            SetState(CharacterState.Shooting);
     }
 
     protected override void OnStateChanged(CharacterState newState, CharacterState oldState)
@@ -34,7 +36,10 @@ public class PlayerController : HeroBase
         switch (newState)
         {
             case CharacterState.EmptyHanded:
-
+                if (controlledBall != null)
+                {
+                    controlledBall = null;
+                }
                 break;
 
             case CharacterState.Passing:
@@ -72,7 +77,11 @@ public class PlayerController : HeroBase
         if (controlledBall != null)
         {
             controlledBall.SetState(BallState.Free);
+            controlledBall.transform.SetParent(null);
+            controlledBall.BallRigidbody.WakeUp();
+            controlledBall.BallRigidbody.AddForce(transform.forward * passingPower/10);
             controlledBall = null;
+            SetState(CharacterState.EmptyHanded);
         }
     }
 

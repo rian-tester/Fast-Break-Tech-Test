@@ -40,19 +40,18 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
     protected CharacterController characterController;
     [SerializeField, ReadOnly]
     protected Animator animator;
-    protected CapsuleCollider ballDetectionCollider;
 
 
     protected virtual void Awake()
     {
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
-        ballDetectionCollider = GetComponent<CapsuleCollider>();
     }
     protected virtual void Start()
     {
         controlledBall = null;
         previousPosition = transform.position;
+        SetState(CharacterState.EmptyHanded);
     }
 
     protected virtual void Update()
@@ -63,27 +62,6 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
         UpdateAnimation();
     }
 
-    void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.CompareTag("Ball"))
-        {
-            if (controlledBall != null)
-            {
-                controlledBall = null;
-            }
-        }
-    }
-
-    void OnTriggerStay(Collider other)
-    {
-         if (other.gameObject.CompareTag("Ball"))
-        {
-            if (controlledBall == null)
-            {
-                controlledBall = other.gameObject.GetComponent<BallController>();
-            }
-        }
-    }
     protected virtual void Move()
     {
         Vector3 moveDir = new Vector3(inputDirection.x, 0, inputDirection.y);
@@ -124,7 +102,13 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
 
     protected virtual void OnStateChanged(CharacterState newState, CharacterState oldState)
     {
-        
+        if (newState == CharacterState.EmptyHanded)
+        {
+            if (controlledBall != null)
+            {
+                controlledBall = null;
+            }
+        }
     }
 
     public Transform GetDribbleOrigin()
@@ -134,6 +118,12 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
 
     public void SetControlledBall(BallController theBall)
     {
+        if (characterState != CharacterState.EmptyHanded)
+        {
+            Debug.LogWarning($"{GetCharacterName()} cannot take ball - not empty handed (current state: {characterState})");
+            return;
+        }
+        
         controlledBall = theBall;
         SetState(CharacterState.Dribbling);
     }
