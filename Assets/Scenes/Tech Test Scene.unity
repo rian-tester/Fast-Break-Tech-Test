@@ -1049,10 +1049,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3542152408280303613, guid: 6d42da25d19de114fa8179b12d75c19a, type: 3}
-      propertyPath: playerAccuracy
-      value: 50.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3542152408280303613, guid: 6d42da25d19de114fa8179b12d75c19a, type: 3}
       propertyPath: arcHeightMultiplier
       value: 0.52
       objectReference: {fileID: 0}
@@ -1226,7 +1222,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7134587936817501893, guid: 6d42da25d19de114fa8179b12d75c19a, type: 3}
       propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7134587936817501893, guid: 6d42da25d19de114fa8179b12d75c19a, type: 3}
       propertyPath: m_ActionEvents.Array.data[13].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -1262,7 +1258,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7134587936817501893, guid: 6d42da25d19de114fa8179b12d75c19a, type: 3}
       propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: TestReleaseBall
+      value: OnInteract
       objectReference: {fileID: 0}
     - target: {fileID: 7134587936817501893, guid: 6d42da25d19de114fa8179b12d75c19a, type: 3}
       propertyPath: m_ActionEvents.Array.data[13].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName

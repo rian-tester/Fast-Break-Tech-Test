@@ -220,7 +220,7 @@
                 {
                     "name": "",
                     "id": "1c04ea5f-b012-41d1-a6f7-02e963b52893",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
@@ -242,7 +242,7 @@
                 {
                     "name": "",
                     "id": "2527675c-d23b-4fac-b766-7aa25bb5b4ec",
-                    "path": "<Keyboard>/v",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
@@ -264,7 +264,7 @@
                 {
                     "name": "",
                     "id": "15f79b32-9279-43dc-b260-9a57ac8b06be",
-                    "path": "<Keyboard>/b",
+                    "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",

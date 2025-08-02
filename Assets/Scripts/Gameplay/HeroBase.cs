@@ -40,6 +40,7 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
     protected CharacterController characterController;
     [SerializeField, ReadOnly]
     protected Animator animator;
+    [SerializeField, ReadOnly]
     protected CapsuleCollider collisionTrigger;
 
 
@@ -53,7 +54,6 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
     {
         controlledBall = null;
         previousPosition = transform.position;
-        SetCharacterState(CharacterState.EmptyHanded);
     }
 
     protected virtual void Update()
@@ -118,16 +118,21 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
         return playerDribbleAnchor;
     }
 
-    public void SetControlledBall(BallController theBall)
+    public virtual void SetControlledBall(BallController theBall)
     {
-        if (characterState != CharacterState.EmptyHanded)
+        var playerController = this as PlayerController;
+        if (playerController != null && !playerController.playerStateMachine.IsInState<EmptyHandedState>())
         {
-            Debug.LogWarning($"{GetCharacterName()} cannot take ball - not empty handed (current state: {characterState})");
+            Debug.LogWarning($"{GetCharacterName()} cannot take ball - not in empty handed state");
             return;
         }
         
         controlledBall = theBall;
-        SetCharacterState(CharacterState.Dribbling);
+        
+        if (playerController != null)
+        {
+            playerController.playerStateMachine.OnBallPickedUp();
+        }
     }
 
     public string GetCharacterName()

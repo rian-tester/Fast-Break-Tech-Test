@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 7134587936817501893}
   - component: {fileID: 3542152408280303613}
   - component: {fileID: 4124812794990427348}
+  - component: {fileID: 1207060590802712973}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -269,9 +270,9 @@ MonoBehaviour:
   controlledBall: {fileID: 0}
   characterController: {fileID: 0}
   animator: {fileID: 0}
-  passingPower: 1500
-  shootingPower: 2000
-  shootingArc: 100
+  passingPower: 30
+  playerAccuracy: 80
+  playerStateMachine: {fileID: 0}
 --- !u!95 &4124812794990427348
 Animator:
   serializedVersion: 7
@@ -294,6 +295,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1207060590802712973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9214183132029187203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 876fe0aa710fa9743b809641f595c71b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentStateName: 
 --- !u!1001 &8203817516411223601
 PrefabInstance:
   m_ObjectHideFlags: 0

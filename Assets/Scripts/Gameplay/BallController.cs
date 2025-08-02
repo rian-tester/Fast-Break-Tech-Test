@@ -45,11 +45,21 @@ public class BallController : MonoBehaviour
 
     
     private bool isBeingPickedUp = false;
+    [SerializeField]
+    private BallStateMachine ballStateMachine;
+    
+    private float pickupCooldown = 0f;
+    private const float PICKUP_COOLDOWN_TIME = 1f;
+
+    public ICharacter GetCurrentBallHandler() => currentBallHandler;
 
     void Awake()
     {
         ballCollider = GetComponent<SphereCollider>();
         ballRigidbody = GetComponent<Rigidbody>();
+        ballStateMachine = GetComponent<BallStateMachine>();
+        if (ballStateMachine == null)
+            ballStateMachine = gameObject.AddComponent<BallStateMachine>();
     }
 
     void Start()
@@ -57,27 +67,12 @@ public class BallController : MonoBehaviour
         bounceOrigin = gameObject.transform;
         ballRigidbody.linearDamping = rbLinearDamping;
         ballRigidbody.angularDamping = rbAngularDamping;
-        SetBallState(BallState.Idle);
+        ballStateMachine.TransitionToIdle();
     }
     void Update()
     {
-        if (state == BallState.Taken)
-        {
-            if (currentBallHandler == null)
-            {
-                Debug.LogWarning("There is no ball handler, cant bounce!");
-            }
-            else
-            {
-
-            }
-            float bounce = Mathf.Abs(Mathf.Sin(Time.time * bounceInterval)) * bounceHeight;
-            bounceOrigin.position = currentBallHandler.GetDribbleOrigin().position + Vector3.up * bounce;
-
-        }
-
-        if (ballRigidbody.linearVelocity.magnitude < Mathf.Epsilon && ballRigidbody.angularVelocity.magnitude < Mathf.Epsilon) SetBallState(BallState.Idle);
-        
+        if (pickupCooldown > 0)
+            pickupCooldown -= Time.deltaTime;
     }
     void OnCollisionEnter(Collision collision)
     {
@@ -89,6 +84,8 @@ public class BallController : MonoBehaviour
     
     void OnTriggerEnter(Collider other)
     {
+        if (pickupCooldown > 0) return;
+        
         if (other.gameObject.CompareTag("Player") && state != BallState.Taken && !isBeingPickedUp)
         {
             TryPickupBall(other.gameObject);
@@ -106,8 +103,8 @@ public class BallController : MonoBehaviour
             character.SetControlledBall(this);
             if (currentBallHandler != null)
             {
-                SetBallState(BallState.Taken);
-                transform.SetParent(playerObject.transform);
+                ballStateMachine.TransitionToTaken();
+                transform.SetParent(character.GetDribbleOrigin());
             }
         }
         
@@ -190,78 +187,88 @@ public class BallController : MonoBehaviour
 
         
         Debug.Log("Ball shooting sequence complete - ball state updated to Free");
+        
+        if (ballStateMachine.CurrentState is BallFlyToRingState flyState)
+        {
+            flyState.OnFlightComplete();
+        }
     }
     public void SetBallState(BallState newState)
     {
         state = newState;
         isBeingPickedUp = false;
         
-        switch (state)
+        switch (newState)
         {
             case BallState.Idle:
-                ballRigidbody.isKinematic = false;
-                ballCollider.isTrigger = false;
-                ballRigidbody.mass = 1f;
-                ballRigidbody.useGravity = true;
-                if (transform.parent != null) transform.SetParent(null);
-                ballRigidbody.WakeUp();
-                if (currentBallHandler != null)
-                {
-                    currentBallHandler = null;
-                }
-                
-                
-
+                ballStateMachine.TransitionToIdle();
                 break;
             case BallState.Free:
-                ballRigidbody.isKinematic = false;
-                ballCollider.isTrigger = false;
-                ballRigidbody.mass = 1;
-                ballRigidbody.useGravity = true;
-                if (transform.parent != null) transform.SetParent(null);
-                ballRigidbody.WakeUp();
-                if (currentBallHandler != null)
-                {
-                    currentBallHandler = null;
-                }
-
-                ballRigidbody.AddTorque(GiveRandomFloat(), GiveRandomFloat(), GiveRandomFloat());
-
+                ballStateMachine.TransitionToFree();
                 break;
             case BallState.Taken:
-                ballRigidbody.isKinematic = false;
-                ballCollider.isTrigger = true;
-                ballRigidbody.mass = 0;
-                ballRigidbody.useGravity = false;
-                ballRigidbody.AddTorque(GiveRandomFloat(), GiveRandomFloat(), GiveRandomFloat());
-                Debug.Log($"The ball currently taken by {currentBallHandler.GetCharacterName()}");
-
+                ballStateMachine.TransitionToTaken();
                 break;
-            
             case BallState.FlyToRing:
-                ballRigidbody.isKinematic = true;
-                ballCollider.isTrigger = true;
-                ballRigidbody.mass = 0f;
-                ballRigidbody.useGravity = false;
-                if (transform.parent != null) transform.SetParent(null);
-                if (currentBallHandler != null)
-                {
-                    currentBallHandler = null;
-                }
-
-                ballRigidbody.AddTorque(GiveRandomFloat(), GiveRandomFloat(), GiveRandomFloat());
-                StartCoroutine(FlyToRingCoroutine(shooterPosition, finalTarget, ringCenterPosition, flightTimeMultiplier, arcHeightMultiplier));
-                
-                break;
-
-            default:
+                ballStateMachine.TransitionToFlyToRing();
                 break;
         }
     }
 
-    private float GiveRandomFloat()
+    public float GiveRandomFloat()
     {
         return Random.Range(1, 2);
+    }
+
+    public void ClearBallHandler()
+    {
+        currentBallHandler = null;
+    }
+
+    public void SetBallHandler(ICharacter handler)
+    {
+        currentBallHandler = handler;
+    }
+
+    public void SetPickupCooldown()
+    {
+        pickupCooldown = PICKUP_COOLDOWN_TIME;
+    }
+
+    public void UpdateBouncing(float deltaTime)
+    {
+        if (currentBallHandler == null)
+            return;
+
+        float bounce = Mathf.Abs(Mathf.Sin(Time.time * bounceInterval)) * bounceHeight;
+        
+        Vector3 dribblePosition = currentBallHandler.GetDribbleOrigin().position;
+        transform.position = dribblePosition + Vector3.up * bounce;
+    }    public void StartFlightCoroutine()
+    {
+        StartCoroutine(FlyToRingCoroutine(shooterPosition, finalTarget, ringCenterPosition, flightTimeMultiplier, arcHeightMultiplier));
+    }
+
+    [ContextMenu("Test Ball State Machine")]
+    public void TestBallStateMachine()
+    {
+        if (!Application.isPlaying) return;
+        
+        Debug.Log($"=== Testing Ball State Machine for {name} ===");
+        Debug.Log($"Current state: {ballStateMachine.CurrentState.GetType().Name}");
+        
+        ballStateMachine.TransitionToFree();
+        Debug.Log("Transitioned to Free state");
+        
+        ballStateMachine.TransitionToIdle();
+        Debug.Log("Transitioned to Idle state");
+    }
+
+    [ContextMenu("Force Ball Free")]
+    public void ForceBallFree()
+    {
+        if (!Application.isPlaying) return;
+        ballStateMachine.TransitionToFree();
     }
 
 }
