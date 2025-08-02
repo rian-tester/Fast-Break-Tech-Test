@@ -51,7 +51,12 @@ public class ShootingState : State
                 BasketballRing targetRing = gameManager.GetTargetRing(playerController.GetTeam());
                 if (targetRing != null)
                 {
-                    controlledBall.SetupShootingTarget(targetRing.ShootingTarget.position, playerController.PlayerAccuracy);
+                    controlledBall.SetupShootingTarget(
+                        targetRing.ShootingTarget.position, 
+                        playerController.PlayerAccuracy,
+                        playerController.FlightTimeMultiplier,
+                        playerController.ArcHeightMultiplier
+                    );
                     controlledBall.BallStateMachine.TransitionToFlyToRing();
                     controlledBall.transform.SetParent(null);
                     controlledBall.ClearBallHandler();

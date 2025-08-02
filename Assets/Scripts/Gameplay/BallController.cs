@@ -38,8 +38,8 @@ public class BallController : MonoBehaviour
     Vector3 ringCenterPosition= new Vector3();
     Vector3 finalTarget = new Vector3();
     float shootAccuracy = 1f;
-    float flightTimeMultiplier = 0.2f;
-    float arcHeightMultiplier = 0.5f;
+    float playerFlightTimeMultiplier = 0.2f;
+    float playerArcHeightMultiplier = 0.5f;
 
     
     private bool isBeingPickedUp = false;
@@ -109,12 +109,14 @@ public class BallController : MonoBehaviour
         isBeingPickedUp = false;
     }
  
-    public void SetupShootingTarget(Vector3 targetPosition, float accuracy)
+    public void SetupShootingTarget(Vector3 targetPosition, float accuracy, float flightMultiplier, float arcMultiplier)
     {
         shooterPosition = transform.position;
         ringTopPosition = targetPosition + Vector3.up * 0.6f;
         ringCenterPosition = targetPosition;
         shootAccuracy = accuracy;
+        playerFlightTimeMultiplier = flightMultiplier;
+        playerArcHeightMultiplier = arcMultiplier;
         finalTarget = ApplyAccuracyVariance(ringTopPosition, shootAccuracy);
         
     }
@@ -182,6 +184,8 @@ public class BallController : MonoBehaviour
         ringCenterPosition= new Vector3();
         finalTarget = new Vector3();
         shootAccuracy = 1f;
+        playerFlightTimeMultiplier = 0.2f;
+        playerArcHeightMultiplier = 0.5f;
 
         
         Debug.Log("Ball shooting sequence complete - ball state updated to Free");
@@ -224,7 +228,7 @@ public class BallController : MonoBehaviour
         transform.position = dribblePosition + Vector3.up * bounce;
     }    public void StartFlightCoroutine()
     {
-        StartCoroutine(FlyToRingCoroutine(shooterPosition, finalTarget, ringCenterPosition, flightTimeMultiplier, arcHeightMultiplier));
+        StartCoroutine(FlyToRingCoroutine(shooterPosition, finalTarget, ringCenterPosition, playerFlightTimeMultiplier, playerArcHeightMultiplier));
     }
 
     [ContextMenu("Test Ball State Machine")]

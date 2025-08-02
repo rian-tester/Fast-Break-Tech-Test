@@ -25,6 +25,21 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
     protected Transform playerDribbleAnchor;
     [SerializeField, ReadOnly]
     protected BallController controlledBall;
+    public BallController ControlledBall => controlledBall;
+
+    [Header("Shooting & Passing")]
+    [SerializeField]
+    protected float passingPower = 30f;
+    [SerializeField]
+    protected float playerAccuracy = 80f;
+    [SerializeField]
+    protected float flightTimeMultiplier = 0.2f;
+    [SerializeField]
+    protected float arcHeightMultiplier = 0.5f;
+    public float PassingPower => passingPower;
+    public float PlayerAccuracy => playerAccuracy;
+    public float FlightTimeMultiplier => flightTimeMultiplier;
+    public float ArcHeightMultiplier => arcHeightMultiplier;
 
 
     [Header("Velocity")]
@@ -125,5 +140,7 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
     {
         return playerTeam;
     }
+
+
 
 }

@@ -3,17 +3,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : HeroBase
 {
-    [SerializeField]
-    private float passingPower = 30f;
-    [SerializeField]
-    float playerAccuracy = 80f;
-
-    [SerializeField]
+    [SerializeField, ReadOnly]
     public PlayerStateMachine playerStateMachine;
-
-    public float PassingPower => passingPower;
-    public float PlayerAccuracy => playerAccuracy;
-    public BallController ControlledBall => controlledBall;
 
     protected override void Awake()
     {
@@ -27,7 +18,7 @@ public class PlayerController : HeroBase
     {
         base.Update();
     }
-    
+
     public void OnMove(InputAction.CallbackContext context)
     {
         inputDirection = context.ReadValue<Vector2>();
@@ -57,8 +48,6 @@ public class PlayerController : HeroBase
         }
     }
 
-
-
     public override void SetControlledBall(BallController theBall)
     {
         if (theBall == null)
@@ -85,22 +74,23 @@ public class PlayerController : HeroBase
             controlledBall.BallStateMachine.TransitionToFree();
             controlledBall.transform.SetParent(null);
             controlledBall.BallRigidbody.WakeUp();
-            controlledBall.BallRigidbody.AddForce(transform.forward * passingPower/10);
+            controlledBall.BallRigidbody.AddForce(transform.forward * PassingPower / 10);
             controlledBall = null;
             playerStateMachine.OnBallReleased();
         }
     }
 
+    #region Test
     public void TestStateMachine()
     {
         Debug.Log($"=== Testing State Machine for {name} ===");
         Debug.Log($"Current state: {playerStateMachine.CurrentState.GetType().Name}");
-        
+
         playerStateMachine.TestPickupBall();
-        
+
         Debug.Log("Testing pass input...");
         playerStateMachine.HandlePassInput();
-        
+
         Debug.Log("Testing shoot input...");
         playerStateMachine.HandleShootInput();
     }
@@ -109,10 +99,10 @@ public class PlayerController : HeroBase
     public void TestStateTransitions()
     {
         if (!Application.isPlaying) return;
-        
+
         Debug.Log("=== Manual State Testing ===");
         Debug.Log($"Current State: {playerStateMachine.CurrentState.GetType().Name}");
-        
+
         if (playerStateMachine.CurrentState is EmptyHandedState)
         {
             Debug.Log("Simulating ball pickup...");
@@ -137,4 +127,5 @@ public class PlayerController : HeroBase
         if (!Application.isPlaying) return;
         playerStateMachine.OnBallPickedUp();
     }
+    #endregion
 }
