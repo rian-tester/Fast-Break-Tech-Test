@@ -2,20 +2,38 @@ using UnityEngine;
 
 public class GameManager : IService
 {
-    // Intentionally left blank for candidate implementation.
-    // Needs to be attached to ServiceLocator
+    private BasketballRing[] basketballRings;
+
     public string GetServiceName()
     {
-        throw new System.NotImplementedException();
+        return "GameManager";
     }
 
     public void Initialize()
     {
-        throw new System.NotImplementedException();
+        basketballRings = Object.FindObjectsByType<BasketballRing>(FindObjectsSortMode.None);
+        Debug.Log($"GameManager initialized with {basketballRings.Length} basketball rings");
     }
 
     public void Shutdown()
     {
-        throw new System.NotImplementedException();
+        basketballRings = null;
+    }
+
+    public BasketballRing GetTargetRing(Team playerTeam)
+    {
+        foreach (var ring in basketballRings)
+        {
+            if (ring.DefendingTeam != playerTeam)
+            {
+                return ring;
+            }
+        }
+        return null;
+    }
+
+    public BasketballRing[] GetAllRings()
+    {
+        return basketballRings;
     }
 }

@@ -22,6 +22,8 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
 
     [Header("Character Settings")]
     [SerializeField]
+    protected Team playerTeam;
+    [SerializeField]
     protected Transform playerDribbleAnchor;
     [SerializeField, ReadOnly]
     protected BallController controlledBall;
@@ -139,6 +141,11 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
     public string GetCharacterName()
     {
         return gameObject.name;
+    }
+
+    public Team GetTeam()
+    {
+        return playerTeam;
     }
 
 }

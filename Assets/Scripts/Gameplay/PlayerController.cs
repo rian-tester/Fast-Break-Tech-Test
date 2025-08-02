@@ -5,6 +5,10 @@ public class PlayerController : HeroBase
 {
     [SerializeField]
     private float passingPower;
+    [SerializeField]
+    private float shootingPower;
+    [SerializeField]
+    private float shootingArc;
 
     protected override void Update()
     {
@@ -18,6 +22,11 @@ public class PlayerController : HeroBase
     public void OnPass(InputAction.CallbackContext context)
     {
         if (context.performed) SetState(CharacterState.Passing);
+    }
+
+    public void OnShoot(InputAction.CallbackContext context)
+    {
+        if (context.performed) SetState(CharacterState.Shooting);
     }
 
     protected override void OnStateChanged(CharacterState newState, CharacterState oldState)
@@ -40,7 +49,18 @@ public class PlayerController : HeroBase
                 break;
 
             case CharacterState.Shooting:
-
+                if (controlledBall == null) return;
+                
+                GameManager gameManager = ServiceLocator.Get<GameManager>();
+                if (gameManager != null)
+                {
+                    BasketballRing targetRing = gameManager.GetTargetRing(playerTeam);
+                    if (targetRing != null)
+                    {
+                        ShootBall(targetRing);
+                        Debug.Log($"{GetCharacterName()} shoots toward {targetRing.DefendingTeam} ring!");
+                    }
+                }
                 break;
 
             default:
@@ -54,5 +74,20 @@ public class PlayerController : HeroBase
             controlledBall.SetState(BallState.Free);
             controlledBall = null;
         }
+    }
+
+    private void ShootBall(BasketballRing targetRing)
+    {
+        controlledBall.SetState(BallState.Free);
+        controlledBall.transform.SetParent(null);
+        controlledBall.BallRigidbody.WakeUp();
+
+        Vector3 targetPosition = targetRing.ShootingTarget.position;
+        Vector3 shootDirection = (targetPosition - transform.position).normalized;
+        Vector3 shootForce = (shootDirection * shootingPower) + (Vector3.up * shootingArc);
+
+        controlledBall.BallRigidbody.AddForce(shootForce, ForceMode.Acceleration);
+        controlledBall = null;
+        SetState(CharacterState.EmptyHanded);
     }
 }

@@ -24,7 +24,7 @@ public class ServiceInitializer : MonoBehaviour
         //ServiceLocator.RegisterDependency<IPlayerService, IInputService>();
 
         // Create and register services (with null checks)
-        //RegisterService<GameManagerService>();
+        ServiceLocator.Register<GameManager>(new GameManager());
 
         // Add networked services if needed
         if (isNetworked)
