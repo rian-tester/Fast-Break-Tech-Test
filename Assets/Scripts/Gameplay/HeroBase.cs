@@ -38,12 +38,14 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
     protected CharacterController characterController;
     [SerializeField, ReadOnly]
     protected Animator animator;
+    protected CapsuleCollider ballDetectionCollider;
 
 
     protected virtual void Awake()
     {
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+        ballDetectionCollider = GetComponent<CapsuleCollider>();
     }
     protected virtual void Start()
     {
@@ -57,6 +59,28 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
         Turn();
         CalculateVelocity();
         UpdateAnimation();
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Ball"))
+        {
+            if (controlledBall != null)
+            {
+                controlledBall = null;
+            }
+        }
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+         if (other.gameObject.CompareTag("Ball"))
+        {
+            if (controlledBall == null)
+            {
+                controlledBall = other.gameObject.GetComponent<BallController>();
+            }
+        }
     }
     protected virtual void Move()
     {
