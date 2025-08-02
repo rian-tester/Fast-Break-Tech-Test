@@ -2,6 +2,7 @@ public enum BallState
 {
     Idle,
     Free,
-    Taken
+    Taken,
+    FlyToRing
 }
 
