@@ -40,18 +40,20 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
     protected CharacterController characterController;
     [SerializeField, ReadOnly]
     protected Animator animator;
+    protected CapsuleCollider collisionTrigger;
 
 
     protected virtual void Awake()
     {
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+        collisionTrigger = GetComponent<CapsuleCollider>();
     }
     protected virtual void Start()
     {
         controlledBall = null;
         previousPosition = transform.position;
-        SetState(CharacterState.EmptyHanded);
+        SetCharacterState(CharacterState.EmptyHanded);
     }
 
     protected virtual void Update()
@@ -92,7 +94,7 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
         animator.SetFloat("Velocity", Velocity2D.magnitude);
     }
 
-    public void SetState(CharacterState newState)
+    public void SetCharacterState(CharacterState newState)
     {
         if (characterState == newState) return;
         var oldState = characterState;
@@ -125,7 +127,7 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
         }
         
         controlledBall = theBall;
-        SetState(CharacterState.Dribbling);
+        SetCharacterState(CharacterState.Dribbling);
     }
 
     public string GetCharacterName()

@@ -16,7 +16,7 @@ public class BasketballRing : MonoBehaviour
         if (other.gameObject.CompareTag("Ball"))
         {
             var ball = other.gameObject.GetComponent<BallController>();
-            ball.SetState(BallState.Free);
+            ball.SetBallState(BallState.Free);
         }
     }
 }

@@ -19,14 +19,14 @@ public class PlayerController : HeroBase
 
     public void OnPass(InputAction.CallbackContext context)
     {
-        if (context.performed && characterState == CharacterState.Dribbling) 
-            SetState(CharacterState.Passing);
+        if (context.performed && characterState == CharacterState.Dribbling)
+            SetCharacterState(CharacterState.Passing);
     }
 
     public void OnShoot(InputAction.CallbackContext context)
     {
         if (context.performed && characterState == CharacterState.Dribbling)
-            SetState(CharacterState.Shooting);
+            SetCharacterState(CharacterState.Shooting);
     }
 
     protected override void OnStateChanged(CharacterState newState, CharacterState oldState)
@@ -34,25 +34,30 @@ public class PlayerController : HeroBase
         switch (newState)
         {
             case CharacterState.EmptyHanded:
+                
                 if (controlledBall != null)
                 {
                     controlledBall.transform.SetParent(null);
                     controlledBall = null;
+
                 }
                 break;
 
             case CharacterState.Dribbling:
+                if (controlledBall == null) return;
+                controlledBall.SetBallState(BallState.Taken);
+
 
                 break;
 
             case CharacterState.Passing:
                 if (controlledBall == null) return;
-                controlledBall.SetState(BallState.Free);
+                controlledBall.SetBallState(BallState.Free);
                 controlledBall.transform.SetParent(null);
                 controlledBall.BallRigidbody.WakeUp();
                 controlledBall.BallRigidbody.AddForce((transform.forward * passingPower) + (transform.up * passingPower/4), ForceMode.Acceleration); 
                 controlledBall = null;
-                SetState(CharacterState.EmptyHanded);
+                SetCharacterState(CharacterState.EmptyHanded);
 
                 break;
 
@@ -66,13 +71,14 @@ public class PlayerController : HeroBase
                     if (targetRing != null)
                     {
                         controlledBall.SetupShootingTarget(targetRing.ShootingTarget.position, playerAccuracy);
-                        controlledBall.SetState(BallState.FlyToRing);
-                        //controlledBall.transform.SetParent(null);
+                        controlledBall.SetBallState(BallState.FlyToRing);
+                        controlledBall.transform.SetParent(null);
                         controlledBall = null;
-                        characterState = CharacterState.EmptyHanded;
+                        
                         Debug.Log($"{GetCharacterName()} shoots toward {targetRing.DefendingTeam} ring!");
                     }
                 }
+                SetCharacterState(CharacterState.EmptyHanded);
                 break;
 
             default:
@@ -83,12 +89,12 @@ public class PlayerController : HeroBase
     {
         if (controlledBall != null)
         {
-            controlledBall.SetState(BallState.Free);
+            controlledBall.SetBallState(BallState.Free);
             controlledBall.transform.SetParent(null);
             controlledBall.BallRigidbody.WakeUp();
             controlledBall.BallRigidbody.AddForce(transform.forward * passingPower/10);
             controlledBall = null;
-            SetState(CharacterState.EmptyHanded);
+            SetCharacterState(CharacterState.EmptyHanded);
         }
     }
 }

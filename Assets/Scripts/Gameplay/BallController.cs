@@ -57,7 +57,7 @@ public class BallController : MonoBehaviour
         bounceOrigin = gameObject.transform;
         ballRigidbody.linearDamping = rbLinearDamping;
         ballRigidbody.angularDamping = rbAngularDamping;
-        SetState(BallState.Idle);
+        SetBallState(BallState.Idle);
     }
     void Update()
     {
@@ -76,7 +76,7 @@ public class BallController : MonoBehaviour
 
         }
 
-        if (ballRigidbody.linearVelocity.magnitude < Mathf.Epsilon && ballRigidbody.angularVelocity.magnitude < Mathf.Epsilon) SetState(BallState.Idle);
+        if (ballRigidbody.linearVelocity.magnitude < Mathf.Epsilon && ballRigidbody.angularVelocity.magnitude < Mathf.Epsilon) SetBallState(BallState.Idle);
         
     }
     void OnCollisionEnter(Collision collision)
@@ -106,7 +106,7 @@ public class BallController : MonoBehaviour
             character.SetControlledBall(this);
             if (currentBallHandler != null)
             {
-                SetState(BallState.Taken);
+                SetBallState(BallState.Taken);
                 transform.SetParent(playerObject.transform);
             }
         }
@@ -191,7 +191,7 @@ public class BallController : MonoBehaviour
         
         Debug.Log("Ball shooting sequence complete - ball state updated to Free");
     }
-    public void SetState(BallState newState)
+    public void SetBallState(BallState newState)
     {
         state = newState;
         isBeingPickedUp = false;
