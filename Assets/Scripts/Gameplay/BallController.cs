@@ -66,6 +66,7 @@ public class BallController : MonoBehaviour
     }
     void OnCollisionEnter(Collision collision)
     {
+        /*
         if (collision.gameObject.CompareTag("Player"))
         {
             ICharacter character = collision.gameObject.GetComponent<ICharacter>();
@@ -76,8 +77,9 @@ public class BallController : MonoBehaviour
             }
             SetState(BallState.Taken);
             transform.SetParent(collision.gameObject.transform);
-            
+
         }
+        */
     }
     void OnTriggerEnter(Collider other)
     {
@@ -88,10 +90,9 @@ public class BallController : MonoBehaviour
             {
                 currentBallHandler = character;
                 character.SetControlledBall(this);
+                SetState(BallState.Taken);
+                transform.SetParent(other.gameObject.transform);
             }
-            SetState(BallState.Taken);
-            transform.SetParent(other.gameObject.transform);
-            
         }
     }
     public void SetState(BallState newState)
