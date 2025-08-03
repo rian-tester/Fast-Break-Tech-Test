@@ -11,7 +11,7 @@ public class PlayerStateMachine : StateMachine
     public PlayerController PlayerController => playerController;
 
     [Header("Debug Info")]
-    [SerializeField] private string currentStateName;
+    [SerializeField, ReadOnly] private string currentStateName;
 
     void Awake()
     {
@@ -22,7 +22,7 @@ public class PlayerStateMachine : StateMachine
     void Start()
     {
         SwitchState(emptyHandedState);
-        ConnectToBallEvents();
+        SubscribeToBallEvents();
     }
 
     protected override void Update()
@@ -30,6 +30,22 @@ public class PlayerStateMachine : StateMachine
         base.Update();
         currentStateName = CurrentState?.GetType().Name ?? "None";
     }
+    
+    void OnDestroy()
+    {
+        UnsubscribeFromBallEvents();
+    }
+
+     public void SubscribeToBallEvents()
+    {
+        GameEvents.OnBallReleased += HandleBallReleased;
+    }
+
+    public void UnsubscribeFromBallEvents()
+    {
+        GameEvents.OnBallReleased -= HandleBallReleased;
+    }
+
 
     private void InitializeStates()
     {
@@ -39,6 +55,13 @@ public class PlayerStateMachine : StateMachine
         shootingState = new ShootingState(this);
     }
 
+    private void HandleBallReleased(BallController ball)
+    {
+        if (ball == playerController.ControlledBall)
+        {
+            OnBallReleased();
+        }
+    }
     public void HandlePassInput()
     {
         if (CurrentState is DribblingState)
@@ -67,34 +90,5 @@ public class PlayerStateMachine : StateMachine
     {
         playerController.SetControlledBall(null);
         SwitchState(emptyHandedState);
-    }
-
-    public void TestPickupBall()
-    {
-        Debug.Log($"Testing ball pickup for {playerController.name}");
-        OnBallPickedUp();
-    }
-
-    public void ConnectToBallEvents()
-    {
-        GameEvents.OnBallReleased += HandleBallReleased;
-    }
-
-    public void DisconnectFromBallEvents()
-    {
-        GameEvents.OnBallReleased -= HandleBallReleased;
-    }
-
-    private void HandleBallReleased(BallController ball)
-    {
-        if (ball == playerController.ControlledBall)
-        {
-            OnBallReleased();
-        }
-    }
-
-    void OnDestroy()
-    {
-        DisconnectFromBallEvents();
     }
 }

@@ -40,14 +40,6 @@ public class PlayerController : HeroBase
         }
     }
 
-    public void OnInteract(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-            playerStateMachine.TestPickupBall();
-        }
-    }
-
     public override void SetControlledBall(BallController theBall)
     {
         if (theBall == null)
@@ -67,26 +59,11 @@ public class PlayerController : HeroBase
             Debug.LogWarning($"{GetCharacterName()} cannot take ball - not in empty handed state (current state: {playerStateMachine.CurrentState.GetType().Name})");
         }
     }
-    public void TestReleaseBall()
-    {
-        if (controlledBall != null)
-        {
-            controlledBall.BallStateMachine.TransitionToFree();
-            controlledBall.transform.SetParent(null);
-            controlledBall.BallRigidbody.WakeUp();
-            controlledBall.BallRigidbody.AddForce(transform.forward * PassingPower / 10);
-            controlledBall = null;
-            playerStateMachine.OnBallReleased();
-        }
-    }
-
     #region Test
     public void TestStateMachine()
     {
         Debug.Log($"=== Testing State Machine for {name} ===");
         Debug.Log($"Current state: {playerStateMachine.CurrentState.GetType().Name}");
-
-        playerStateMachine.TestPickupBall();
 
         Debug.Log("Testing pass input...");
         playerStateMachine.HandlePassInput();

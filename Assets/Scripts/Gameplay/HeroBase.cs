@@ -15,7 +15,7 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
     protected Vector2 inputDirection;
     [SerializeField, ReadOnly]
     protected Vector3 lastMoveDirection;
-    
+
 
 
     [Header("Character Settings")]
@@ -107,28 +107,9 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
         animator.SetFloat("Velocity", Velocity2D.magnitude);
     }
 
-
-
     public Transform GetDribbleOrigin()
     {
         return playerDribbleAnchor;
-    }
-
-    public virtual void SetControlledBall(BallController theBall)
-    {
-        var playerController = this as PlayerController;
-        if (playerController != null && !playerController.playerStateMachine.IsInState<EmptyHandedState>())
-        {
-            Debug.LogWarning($"{GetCharacterName()} cannot take ball - not in empty handed state");
-            return;
-        }
-        
-        controlledBall = theBall;
-        
-        if (playerController != null)
-        {
-            playerController.playerStateMachine.OnBallPickedUp();
-        }
     }
 
     public string GetCharacterName()
@@ -140,7 +121,6 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
     {
         return playerTeam;
     }
-
-
-
+    
+    public abstract void SetControlledBall(BallController theBall);
 }

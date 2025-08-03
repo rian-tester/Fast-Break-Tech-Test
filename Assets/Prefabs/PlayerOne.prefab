@@ -260,7 +260,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b77c9f0e1ae483841a18804b843599bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterState: 0
   moveSpeed: 5
   rotationLerpSpeed: 10
   inputDirection: {x: 0, y: 0}
@@ -268,10 +267,13 @@ MonoBehaviour:
   playerTeam: 0
   playerDribbleAnchor: {fileID: 3935218568783908876}
   controlledBall: {fileID: 0}
-  characterController: {fileID: 0}
-  animator: {fileID: 0}
   passingPower: 30
   playerAccuracy: 80
+  flightTimeMultiplier: 0.1
+  arcHeightMultiplier: 0.2
+  characterController: {fileID: 0}
+  animator: {fileID: 0}
+  collisionTrigger: {fileID: 0}
   playerStateMachine: {fileID: 0}
 --- !u!95 &4124812794990427348
 Animator:

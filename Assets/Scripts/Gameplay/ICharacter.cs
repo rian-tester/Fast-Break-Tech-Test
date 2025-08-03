@@ -3,6 +3,7 @@ using UnityEngine;
 public interface ICharacter
 {
     Transform GetDribbleOrigin();
-    void SetControlledBall(BallController theBall);
     string GetCharacterName();
+    Team GetTeam();
+    abstract void SetControlledBall(BallController theBall);
 }

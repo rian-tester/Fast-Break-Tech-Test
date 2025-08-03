@@ -11,7 +11,7 @@ public class BallStateMachine : StateMachine
     public BallController BallController => ballController;
 
     [Header("Debug Info")]
-    [SerializeField] private string currentStateName;
+    [SerializeField, ReadOnly] private string currentStateName;
 
     void Awake()
     {
