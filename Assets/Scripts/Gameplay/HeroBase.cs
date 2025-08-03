@@ -2,7 +2,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(Animator))]
-public abstract class HeroBase : MonoBehaviour, ICharacter
+public abstract class HeroBase : MonoBehaviour, IHero
 {
 
 

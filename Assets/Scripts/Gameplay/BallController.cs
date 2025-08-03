@@ -23,7 +23,7 @@ public class BallController : MonoBehaviour
 
 
     [Header("Component References")]
-    private ICharacter currentBallHandler;
+    private IHero currentBallHandler;
     [SerializeField, ReadOnly]
     private SphereCollider ballCollider;
     [SerializeField, ReadOnly]
@@ -49,7 +49,7 @@ public class BallController : MonoBehaviour
     private float pickupCooldown = 0f;
     private const float PICKUP_COOLDOWN_TIME = 1f;
 
-    public ICharacter GetCurrentBallHandler() => currentBallHandler;
+    public IHero GetCurrentBallHandler() => currentBallHandler;
 
     void Awake()
     {
@@ -94,7 +94,7 @@ public class BallController : MonoBehaviour
     {
         isBeingPickedUp = true;
         
-        ICharacter character = playerObject.GetComponent<ICharacter>();
+        IHero character = playerObject.GetComponent<IHero>();
         if (character != null)
         {
             currentBallHandler = character;
@@ -207,7 +207,7 @@ public class BallController : MonoBehaviour
         currentBallHandler = null;
     }
 
-    public void SetBallHandler(ICharacter handler)
+    public void SetBallHandler(IHero handler)
     {
         currentBallHandler = handler;
     }

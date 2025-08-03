@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public interface ICharacter
+public interface IHero
 {
     Transform GetDribbleOrigin();
     string GetCharacterName();
