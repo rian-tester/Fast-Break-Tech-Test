@@ -23,12 +23,7 @@ public class BallStateMachine : StateMachine
     {
         SwitchState(ballIdleState);
         ConnectToEvents();
-    }
-
-    protected override void Update()
-    {
-        base.Update();
-        currentStateName = CurrentState?.GetType().Name ?? "None";
+         
     }
 
     private void InitializeStates()
@@ -39,6 +34,11 @@ public class BallStateMachine : StateMachine
         ballFlyToRingState = new BallFlyToRingState(this);
     }
 
+    public override void SwitchState(State newState)
+    {
+        base.SwitchState(newState);
+        currentStateName = CurrentState.GetType().Name;
+    }
     public void TransitionToIdle()
     {
         SwitchState(ballIdleState);

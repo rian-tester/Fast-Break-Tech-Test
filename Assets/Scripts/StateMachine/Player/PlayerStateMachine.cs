@@ -25,12 +25,6 @@ public class PlayerStateMachine : StateMachine
         SubscribeToBallEvents();
     }
 
-    protected override void Update()
-    {
-        base.Update();
-        currentStateName = CurrentState?.GetType().Name ?? "None";
-    }
-    
     void OnDestroy()
     {
         UnsubscribeFromBallEvents();
@@ -55,6 +49,11 @@ public class PlayerStateMachine : StateMachine
         shootingState = new ShootingState(this);
     }
 
+    public override void SwitchState(State newState)
+    {
+        base.SwitchState(newState);
+        currentStateName = CurrentState.GetType().Name;
+    }
     private void HandleBallReleased(BallController ball)
     {
         if (ball == playerController.ControlledBall)
