@@ -83,6 +83,7 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
     }
     private void CalculateVelocity()
     {
+        // velocity (v) = displacement (Δs) / time
         Vector3 delta = transform.position - previousPosition;
         currentVelocity = delta / Time.deltaTime;
         previousPosition = transform.position;
@@ -94,7 +95,7 @@ public abstract class HeroBase : MonoBehaviour, ICharacter
         animator.SetFloat("Velocity", Velocity2D.magnitude);
     }
 
-    public void SetCharacterState(CharacterState newState)
+    protected virtual void SetCharacterState(CharacterState newState)
     {
         if (characterState == newState) return;
         var oldState = characterState;

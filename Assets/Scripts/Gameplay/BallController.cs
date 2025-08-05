@@ -142,24 +142,27 @@ public class BallController : MonoBehaviour
         Debug.Log($"Ball Flight - Time: {flightTime}, Arc: {arcHeight}, Distance: {distance}");
         
         float elapsedTime = 0f;
-        
+        // move the ball from A to B for all transform
+        // move the ball in sin for y transfom as offset
         while (elapsedTime < flightTime)
         {
             float t = elapsedTime / flightTime;
-            
+
             Vector3 currentPos = Vector3.Lerp(startPos, targetPos, t);
             float heightOffset = Mathf.Sin(t * Mathf.PI) * arcHeight;
             currentPos.y += heightOffset;
-            
+
             transform.position = currentPos;
             transform.Rotate(Vector3.right * 360f * Time.deltaTime);
-            
+
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        
+
+        // Make the ball is at pre defined position
+        // Calculate if it is point or no point
+        // Bug for below 40 accuracy
         transform.position = targetPos;
-        
         bool hitRing = Vector3.Distance(targetPos, ringCenter + Vector3.up * 0.6f) < 0.5f;
         
         if (hitRing)
@@ -182,13 +185,13 @@ public class BallController : MonoBehaviour
         }
 
         //SetState(BallState.Free);
-        shooterPosition = new Vector3();
+        shooterPosition = Vector3.zero;
         ringTopPosition = new Vector3();
         ringCenterPosition= new Vector3();
         finalTarget = new Vector3();
         shootAccuracy = 1f;
 
-        
+        // What happen if the ball not hitting the ring?
         Debug.Log("Ball shooting sequence complete - ball state updated to Free");
     }
     public void SetBallState(BallState newState)
@@ -239,6 +242,7 @@ public class BallController : MonoBehaviour
                 break;
             
             case BallState.FlyToRing:
+                // foundation of blocking and rebound
                 ballRigidbody.isKinematic = true;
                 ballCollider.isTrigger = true;
                 ballRigidbody.mass = 0f;
